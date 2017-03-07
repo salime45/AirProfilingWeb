@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="menu">
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab"  href="#home"><span class="glyphicon glyphicon-home"></span> Inicio</a></li>
+
+        <li><a data-toggle="tab"  href="#menu1"><span class="glyphicon glyphicon-signal"></span> Capturas</a></li>
+        <li><a data-toggle="tab"  href="#menu2"><span class="glyphicon glyphicon-user"></span> Perfiles</a></li>
+
+
+    </ul>
+
+
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+            <!-- Upload form. Note enctype attribute! -->
+            <form action="{% url 'index' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+
+                {{ form.docfile.label_tag }} {{ form.docfile.help_text }} {{ form.docfile.errors }} {{ form.docfile }}  <input type="submit" value="Upload"/>
+
+            </form>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+            <h3>Menu 1</h3>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+        <div id="menu2" class="tab-pane fade">
+            <h3>Menu 2</h3>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
+
+

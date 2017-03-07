@@ -1,0 +1,26 @@
+.header {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.content {
+    margin-left: 40px;
+}
+
+.logout {
+   color: #4c4c4c;
+}
+
+.menu {
+    margin-left: 40px;
+    margin-right: 40px;
+
+}
+
+hr {
+    margin-left: 40px;
+    margin-right: 40px;
+    color:#000000;
+    border: 1px solid;
+
+}
