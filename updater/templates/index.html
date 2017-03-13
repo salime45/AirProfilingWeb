@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="menu">
 
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab"  href="#home"><span class="glyphicon glyphicon-home"></span> Inicio</a></li>
-
-        <li><a data-toggle="tab"  href="#menu1"><span class="glyphicon glyphicon-signal"></span> Capturas</a></li>
-        <li><a data-toggle="tab"  href="#menu2"><span class="glyphicon glyphicon-user"></span> Perfiles</a></li>
-
-
+        <li><a data-toggle="tab"  href="#pcaps"><span class="glyphicon glyphicon-signal"></span> Capturas</a></li>
+        <li><a data-toggle="tab"  href="#perfiles"><span class="glyphicon glyphicon-user"></span> Perfiles</a></li>
     </ul>
 
 
@@ -24,18 +22,99 @@
 
             </form>
         </div>
-        <div id="menu1" class="tab-pane fade">
-            <h3>Menu 1</h3>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <div id="pcaps" class="tab-pane fade">
+
+            <h3>Capturas</h3>
+             <table id="tabla-pcaps">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th></th>
+                  </tr>
+                 <thead>
+            </table>
         </div>
-        <div id="menu2" class="tab-pane fade">
-            <h3>Menu 2</h3>
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+        <div id="perfiles" class="tab-pane fade">
+             <h3>Perfiles</h3>
+             <table id="tabla-perfiles">
+                <thead>
+                  <tr>
+                    <th>Mac</th>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th></th>
+                  </tr>
+                 <thead>
+            </table>
         </div>
 
     </div>
 </div>
 
+
+<script>
+    $(document).ready(function(){
+
+
+
+        initTablaPcaps();
+        initTablaPerfiles();
+        loadPcaps();
+        loadPerfiles();
+
+        function initTablaPcaps(){
+            $("#tabla-pcaps").DataTable({"bPaginate": false,"info": false,});
+        }
+
+        function loadPcaps(){
+               $.get("{% url 'pcaps' %}", function(data, status){
+
+                        //recorremos el array
+                        $.each(data, function (i, v) {
+
+                            //Parseamos el JSON
+                            var nom = v.nom;
+                            var fecha = v.fecha;
+                            var user = v.user;
+                        $('#tabla-pcaps').DataTable().row.add([nom, user, fecha, '']).draw();
+
+
+                });
+
+                });
+        }
+
+        function initTablaPerfiles(){
+            $("#tabla-perfiles").DataTable({"bPaginate": false,"info": false,});
+        }
+
+        function loadPerfiles(){
+               $.get("{% url 'profiles' %}", function(data, status){
+
+                        //recorremos el array
+                        $.each(data, function (i, v) {
+
+                            //Parseamos el JSON
+                            var mac = v.mac;
+                            var nom = v.nom;
+                            var fecha = v.fecha;
+                            var user = v.user;
+                        $('#tabla-perfiles').DataTable().row.add([mac, nom, user, fecha, '']).draw();
+
+
+                });
+
+                });
+        }
+
+
+});
+</script>
+
 {% endblock content %}
+
 
 

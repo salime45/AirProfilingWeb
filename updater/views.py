@@ -3,10 +3,13 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 from .models import Pcap
 from .forms import PcapForm
+from core.models import Perfil
 import core.views as core;
+import json
 
 @login_required
 def index(request):
@@ -25,6 +28,36 @@ def index(request):
     else:
         form = PcapForm()
     return render(request, 'index.html', {'form': form})
+
+@login_required
+def getPcaps(request):
+    pcaps = Pcap.objects.all()
+    array = []
+    for p in  pcaps:
+        aux = {}
+        aux['user'] = p.user.username
+        aux['nom'] = p.docfile.url
+        aux['fecha'] = str( p.date )
+        array.append(aux);
+
+    dataj = json.dumps(array)
+    return HttpResponse(dataj, content_type='application/json')
+
+@login_required
+def getProfiles(request):
+    perfiles = Perfil.objects.all()
+    array = []
+    for p in  perfiles:
+        aux = {}
+        aux['mac'] = p.mac
+        aux['nom'] = p.name
+        aux['user'] = p.user.username
+        aux['fecha'] = str( p.created_date )
+        array.append(aux);
+
+    dataj = json.dumps(array)
+    return HttpResponse(dataj, content_type='application/json')
+
 
 @login_required
 def list(request):
