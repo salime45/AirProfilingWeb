@@ -13,12 +13,17 @@
 
     <div class="tab-content">
         <div id="home" class="tab-pane fade in active">
+
             <!-- Upload form. Note enctype attribute! -->
-            <form action="{% url 'index' %}" method="post" enctype="multipart/form-data">
+            <form id="form-uploader" action="{% url 'index' %}" method="post" enctype="multipart/form-data">
+
+                <h1>Sube un pcap y disfruta.</h1>
+                <br>
                 {% csrf_token %}
                 <p>{{ form.non_field_errors }}</p>
 
-                {{ form.docfile.label_tag }} {{ form.docfile.help_text }} {{ form.docfile.errors }} {{ form.docfile }}  <input type="submit" value="Upload"/>
+                {{ form.docfile.label_tag }}  {{ form.docfile.errors }}  {{ form.docfile }}  <input type="submit" value="Upload"/>
+                <p> {{ form.docfile.help_text }} </p>
 
             </form>
         </div>
