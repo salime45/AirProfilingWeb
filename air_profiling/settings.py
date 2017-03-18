@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'updater',
     'core',
+    'scapy_http',
 ]
 
 MIDDLEWARE = [

@@ -14,7 +14,7 @@ import datetime;
 import json
 
 from scapy.all import *
-
+import scapy_http.http as scapyh
 
 @login_required
 def getProfiles(request):
@@ -49,9 +49,15 @@ def index(request):
         form = PcapForm()
     return render(request, 'index.html', {'form': form})
 
-def getDate(time):
+def getFormatDate(time):
     return datetime.datetime.fromtimestamp(time).strftime('%d-%m-%Y %H:%M:%S')
 
+def getDate(time):
+    return datetime.datetime.fromtimestamp(time)
+
+"""
+Función que a partir de un pcap genera un perfil con sus links
+"""
 def process_pcap(pk_pcap, user):
 
     'abrimos el pcap y lo recorremos'
@@ -62,10 +68,10 @@ def process_pcap(pk_pcap, user):
 
     packets = rdpcap(path)
     for i in range(len(packets)):
-        print("indice : " + str(i))
+        #print("indice : " + str(i))
 
         p = packets[i]
-        print("mac : " + str(p.src))
+        #print("mac : " + str(p.src))
 
         try:
             perfil =  Perfil.objects.get(mac=p.src)
@@ -80,5 +86,43 @@ def process_pcap(pk_pcap, user):
             perfil.pcap = pcap
             perfil.save()
 
+        #print("mac : " + str(p.src))
+        getLink(p, perfil)
 
     return True
+
+"""
+Función que a partir de un paquete genera un link asociado a un perfil
+"""
+def getLink(packet, perfil):
+
+    l =  Link();
+    l.perfil = perfil
+    l.time = getDate(packet.time)
+
+    if IP in packet:
+        l.ip = packet[IP].dst
+
+    if scapyh.HTTPRequest in packet:
+        l.user_agent = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "User-Agent"))
+        l.host = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "Host"))
+        l.cabezera = packet[scapyh.HTTPRequest];
+
+    l.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
