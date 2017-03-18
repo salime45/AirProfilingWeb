@@ -37,7 +37,7 @@ def getPcaps(request):
         aux = {}
         aux['user'] = p.user.username
         aux['nom'] = p.docfile.url
-        aux['fecha'] = str( p.date )
+        aux['fecha'] = p.date.strftime("%d-%m-%Y a las %H:%M")
         array.append(aux);
 
     dataj = json.dumps(array)
@@ -52,33 +52,10 @@ def getProfiles(request):
         aux['mac'] = p.mac
         aux['nom'] = p.name
         aux['user'] = p.user.username
-        aux['fecha'] = str( p.created_date )
+        aux['fecha'] = p.created_date.strftime("%d-%m-%Y a las %H:%M")
         array.append(aux);
 
     dataj = json.dumps(array)
     return HttpResponse(dataj, content_type='application/json')
 
-
-@login_required
-def list(request):
-
-    # Handle file upload
-    if request.method == 'POST':
-        form = PcapForm(request.POST, request.FILES)
-        if form.is_valid():
-            newdoc = Pcap(docfile=request.FILES['docfile'])
-            newdoc.user = request.user
-            newdoc.date = timezone.now()
-            newdoc.save()
-
-            # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('list'))
-    else:
-        form = PcapForm()  # A empty, unbound form
-
-    # Load documents for the list page
-    documents = Pcap.objects.all()
-
-    # Render list page with the documents and the form
-    return render(request, 'list.html', {'documents': documents, 'form': form})
 

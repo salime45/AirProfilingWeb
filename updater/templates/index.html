@@ -30,29 +30,29 @@
         <div id="pcaps" class="tab-pane fade">
 
             <h3>Capturas</h3>
-             <table id="tabla-pcaps">
+            <table id="tabla-pcaps">
                 <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th></th>
-                  </tr>
-                 <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                <thead>
             </table>
         </div>
         <div id="perfiles" class="tab-pane fade">
-             <h3>Perfiles</h3>
-             <table id="tabla-perfiles">
+            <h3>Perfiles</h3>
+            <table id="tabla-perfiles">
                 <thead>
-                  <tr>
-                    <th>Mac</th>
-                    <th>Nombre</th>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th></th>
-                  </tr>
-                 <thead>
+                    <tr>
+                        <th>Mac</th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                <thead>
             </table>
         </div>
 
@@ -61,7 +61,7 @@
 
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
 
 
@@ -70,53 +70,53 @@
         loadPcaps();
         loadPerfiles();
 
-        function initTablaPcaps(){
-            $("#tabla-pcaps").DataTable({"bPaginate": false,"info": false,});
+        function initTablaPcaps() {
+            $("#tabla-pcaps").DataTable({"bPaginate": false, "info": false });
         }
 
-        function loadPcaps(){
-               $.get("{% url 'pcaps' %}", function(data, status){
+        function loadPcaps() {
+            $.get("{% url 'pcaps' %}", function (data, status) {
 
-                        //recorremos el array
-                        $.each(data, function (i, v) {
+                //recorremos el array
+                $.each(data, function (i, v) {
 
-                            //Parseamos el JSON
-                            var nom = v.nom;
-                            var fecha = v.fecha;
-                            var user = v.user;
-                        $('#tabla-pcaps').DataTable().row.add([nom, user, fecha, '']).draw();
+                    //Parseamos el JSON
+                    var nom = v.nom;
+                    var fecha = v.fecha;
+                    var user = v.user;
+                    $('#tabla-pcaps').DataTable().row.add([nom, user, fecha, '']).draw();
 
 
                 });
 
-                });
+            });
         }
 
-        function initTablaPerfiles(){
-            $("#tabla-perfiles").DataTable({"bPaginate": false,"info": false,});
+        function initTablaPerfiles() {
+            $("#tabla-perfiles").DataTable({"bPaginate": false, "info": false });
         }
 
-        function loadPerfiles(){
-               $.get("{% url 'profiles' %}", function(data, status){
+        function loadPerfiles() {
+            $.get("{% url 'profiles' %}", function (data, status) {
 
-                        //recorremos el array
-                        $.each(data, function (i, v) {
+                //recorremos el array
+                $.each(data, function (i, v) {
 
-                            //Parseamos el JSON
-                            var mac = v.mac;
-                            var nom = v.nom;
-                            var fecha = v.fecha;
-                            var user = v.user;
-                        $('#tabla-perfiles').DataTable().row.add([mac, nom, user, fecha, '']).draw();
+                    //Parseamos el JSON
+                    var mac = v.mac;
+                    var nom = v.nom;
+                    var fecha = v.fecha;
+                    var user = v.user;
+                    $('#tabla-perfiles').DataTable().row.add([mac, nom, user, fecha, '']).draw();
 
 
                 });
 
-                });
+            });
         }
 
 
-});
+    });
 </script>
 
 {% endblock content %}
