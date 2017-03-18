@@ -13,7 +13,9 @@ def getPcaps(request):
     for p in  pcaps:
         aux = {}
         aux['user'] = p.user.username
-        aux['nom'] = p.docfile.url
+        path = p.docfile.name
+        folders = path.split("/")
+        aux['nom'] = folders[len( folders ) - 1]
         aux['fecha'] = p.date.strftime("%d-%m-%Y a las %H:%M")
         array.append(aux);
 
