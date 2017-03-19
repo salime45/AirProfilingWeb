@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="div-detalles">
+    <p> <b>Pcap :</b> {{ pcap.docfile.name}} </p>
+    <p> <b>Usuario :</b> {{ pcap.user.username}} </p>
+    <p> <b>Fecha :</b> {{ pcap.date}} </p>
+</div>
+
+<div class="container-fluid">
+    <h3>Perfiles</h3>
+
+            <table id="tabla-perfiles">
+                <thead>
+                    <tr>
+                        <th>Mac</th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                <thead>
+            </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var pcap_id= '{{ pcap.id }}';
+        initTablaPerfiles();
+        loadPerfiles();
+
+        function initTablaPerfiles() {
+            $("#tabla-perfiles").DataTable({"bPaginate": false, "info": false });
+        }
+
+        function loadPerfiles() {
+
+           $.get("{% url 'profiles' %}",{pcap: pcap_id}).done(function (data) {
+
+                //recorremos el array
+                $.each(data, function (i, v) {
+
+                    //Parseamos el JSON
+                    var mac = v.mac;
+                    var nom = v.nom;
+                    var fecha = v.fecha;
+                    var user = v.user;
+                    var btn  = "<a class='btn btn-info' href='perfil?id="+ v.mac +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                    $('#tabla-perfiles').DataTable().row.add([mac, nom, user, fecha, btn]).draw();
+
+
+                });
+           });
+        }
+
+
+    });
+</script>
+
+{% endblock content %}

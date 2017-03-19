@@ -19,7 +19,14 @@ import scapy_http.http as scapyh
 
 @login_required
 def getProfiles(request):
-    perfiles = Perfil.objects.all()
+
+    if 'pcap' in request.GET:
+        pcap = request.GET['pcap']
+        auxp = Pcap.objects.get(pk=pcap)
+        perfiles = Perfil.objects.filter(pcap=auxp)
+    else :
+        perfiles = Perfil.objects.all()
+
     array = []
     for p in  perfiles:
         aux = {}
