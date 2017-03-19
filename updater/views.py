@@ -32,6 +32,7 @@ def getPcap(request):
 
 @login_required
 def getDetailsPcap(request):
+
     id = request.GET['pcap']
     p = get_object_or_404(Pcap, pk=id)
     aux = {}
@@ -39,7 +40,6 @@ def getDetailsPcap(request):
     aux['user'] = p.user.username
     aux['nom'] = getRealName(p.docfile.name)
     aux['fecha'] = p.date.strftime("%d-%m-%Y a las %H:%M")
-    aux['perfiles'] = getProfiles(request)
     data = json.dumps(aux)
 
     return HttpResponse(data, content_type='application/json')

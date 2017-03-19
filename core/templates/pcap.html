@@ -3,9 +3,12 @@
 {% block content %}
 
 <div class="div-detalles">
-    <p> <b>Pcap :</b> {{ pcap.docfile.name}} </p>
-    <p> <b>Usuario :</b> {{ pcap.user.username}} </p>
-    <p> <b>Fecha :</b> {{ pcap.date}} </p>
+    <p> <b>Pcap :</b> <span id="name-pcap"></span> </p>
+    <p> <b>Usuario :</b> <span id="user-pcap"></span> </p>
+    <p> <b>Fecha :</b> <span id="date-pcap"></span> </p>
+    <div class="row text-center">
+        <a class="btn btn-warning" href="">Descargar PCAP</a>
+    </div>
 </div>
 
 <div class="container-fluid">
@@ -26,7 +29,9 @@
 
 <script>
     $(document).ready(function () {
+
         var pcap_id= '{{ pcap.id }}';
+        loadDetails();
         initTablaPerfiles();
         loadPerfiles();
 
@@ -51,6 +56,19 @@
 
 
                 });
+           });
+        }
+
+
+        function loadDetails() {
+
+           $.get("{% url 'detailsPcap' %}",{pcap: pcap_id}).done(function (data) {
+
+                console.log(data)
+                $("#name-pcap").text(data.nom);
+                $("#user-pcap").text(data.user);
+                $("#date-pcap").text(data.fecha);
+
            });
         }
 
