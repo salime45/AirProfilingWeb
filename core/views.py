@@ -47,8 +47,10 @@ def updatePcap(request):
             pcap.user = request.user
             pcap.date = timezone.now()
             pcap.save()
+            #creamos un thread para no hacer esperar al usuario
             _thread.start_new_thread( process_pcap, (pcap.pk, request.user) )
             #process_pcap(pcap.pk, request.user)
+
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('index'))
 
@@ -64,15 +66,14 @@ def process_pcap(pk_pcap, user):
     'abrimos el pcap y lo recorremos'
     pcap = Pcap.objects.get(pk=pk_pcap)
 
-    path = "/home/imonje/air_profiling" + pcap.docfile.url
+    #path = "/home/imonje/air_profiling" + pcap.docfile.url
+    path = pcap.docfile.path
     print(path)
 
     packets = rdpcap(path)
     for i in range(len(packets)):
-        #print("indice : " + str(i))
 
         p = packets[i]
-        #print("mac : " + str(p.src))
 
         try:
             perfil =  Perfil.objects.get(mac=p.src)
