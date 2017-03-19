@@ -12,6 +12,7 @@ from updater.forms import PcapForm
 
 import datetime;
 import json
+import _thread
 
 from scapy.all import *
 import scapy_http.http as scapyh
@@ -33,6 +34,10 @@ def getProfiles(request):
 
 @login_required
 def index(request):
+    return render(request, 'index.html', {'form': PcapForm()})
+
+@login_required
+def updatePcap(request):
     if request.method == 'POST':
 
         form = PcapForm(request.POST, request.FILES)
@@ -42,12 +47,10 @@ def index(request):
             pcap.user = request.user
             pcap.date = timezone.now()
             pcap.save()
-            process_pcap(pcap.pk, request.user)
+            _thread.start_new_thread( process_pcap, (pcap.pk, request.user) )
+            #process_pcap(pcap.pk, request.user)
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('index'))
-    else:
-        form = PcapForm()
-    return render(request, 'index.html', {'form': form})
 
 def getFormatDate(time):
     return datetime.datetime.fromtimestamp(time).strftime('%d-%m-%Y %H:%M:%S')
@@ -55,9 +58,7 @@ def getFormatDate(time):
 def getDate(time):
     return datetime.datetime.fromtimestamp(time)
 
-"""
-Función que a partir de un pcap genera un perfil con sus links
-"""
+
 def process_pcap(pk_pcap, user):
 
     'abrimos el pcap y lo recorremos'
@@ -87,16 +88,15 @@ def process_pcap(pk_pcap, user):
             perfil.save()
 
         #print("mac : " + str(p.src))
-        getLink(p, perfil)
+        getLink(p, perfil, pcap)
 
     return True
 
-"""
-Función que a partir de un paquete genera un link asociado a un perfil
-"""
-def getLink(packet, perfil):
+
+def getLink(packet, perfil, pcap):
 
     l =  Link();
+    l.pcap = pcap
     l.perfil = perfil
     l.time = getDate(packet.time)
 
@@ -106,7 +106,8 @@ def getLink(packet, perfil):
     if scapyh.HTTPRequest in packet:
         l.user_agent = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "User-Agent"))
         l.host = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "Host"))
-        l.cabezera = packet[scapyh.HTTPRequest];
+        l.cabezera = packet[scapyh.HTTPRequest].show();
+        print(packet[scapyh.HTTPRequest].show())
 
     l.save()
 

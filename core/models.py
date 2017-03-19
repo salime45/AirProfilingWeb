@@ -16,6 +16,7 @@ class Perfil(models.Model):
 
 class Link(models.Model):
     perfil = models.ForeignKey('core.Perfil')
+    pcap = models.ForeignKey('updater.Pcap')
     ip = models.CharField(max_length=50)
     host = models.CharField(max_length=50)
     geoposition = models.CharField(max_length=50)
