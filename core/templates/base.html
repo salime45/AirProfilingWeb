@@ -30,12 +30,12 @@
 
         <div class="row header ">
             <div class="col-sm-10">
-               <a href="/"><img src="{% static 'images/logo.png' %}" alt="Logo"></a>
+                <a href="/"><img src="{% static 'images/logo.png' %}" alt="Logo"></a>
             </div>
 
             <div class="col-sm-2 logout" align="right">
                 <br><br><br><br>
-                    [ {{ user.username }} ] <small><a href="{% url 'logout' %}" >Cerrar Sesion</a></small>
+                [ {{ user.username }} ] <small><a href="{% url 'logout' %}" >Cerrar Sesion</a></small>
             </div>
         </div>
         <div class="row">
@@ -47,11 +47,41 @@
         {% endblock %}
     </body>
 
+    <!-- Alert -->
+    <div id="alert" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button  id="accept-error" type="button" data-dismiss="modal" class="btn btn-warning">Aceptar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </html>
 
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
 
+    $(document).keydown(function (e) {
+
+        var key = e.which;
+        if (key === 27) {  //si se pulsa esc cerramos el alert
+            $('#alert').modal('hide');
+        }
     });
+});
+
+function showInformation(msg) {
+    $('#alert .modal-body').html(msg);
+    $('#alert').modal('toggle');
+}
 
 </script>

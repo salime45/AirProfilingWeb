@@ -1,7 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
-from django.utils import timezone
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
@@ -12,7 +10,6 @@ from updater.forms import PcapForm
 
 import datetime;
 import json
-import _thread
 
 from scapy.all import *
 import scapy_http.http as scapyh
@@ -43,23 +40,7 @@ def getProfiles(request):
 def index(request):
     return render(request, 'index.html', {'form': PcapForm()})
 
-@login_required
-def updatePcap(request):
-    if request.method == 'POST':
 
-        form = PcapForm(request.POST, request.FILES)
-        if form.is_valid():
-
-            pcap = Pcap(docfile=request.FILES['docfile'])
-            pcap.user = request.user
-            pcap.date = timezone.now()
-            pcap.save()
-            #creamos un thread para no hacer esperar al usuario
-            _thread.start_new_thread( process_pcap, (pcap.pk, request.user) )
-            #process_pcap(pcap.pk, request.user)
-
-            # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('index'))
 
 def getFormatDate(time):
     return datetime.datetime.fromtimestamp(time).strftime('%d-%m-%Y %H:%M:%S')
