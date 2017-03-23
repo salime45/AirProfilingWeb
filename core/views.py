@@ -6,40 +6,20 @@ from django.http import HttpResponse
 from .models import Perfil
 from .models import Link
 from updater.models import Pcap
+
 from updater.forms import PcapForm
 
+from .integrations import getLocation
+
 import datetime;
-import json
 
 from scapy.all import *
 import scapy_http.http as scapyh
 
-@login_required
-def getProfiles(request):
-
-    if 'pcap' in request.GET:
-        pcap = request.GET['pcap']
-        auxp = Pcap.objects.get(pk=pcap)
-        perfiles = Perfil.objects.filter(pcap=auxp)
-    else :
-        perfiles = Perfil.objects.all()
-
-    array = []
-    for p in  perfiles:
-        aux = {}
-        aux['mac'] = p.mac
-        aux['nom'] = p.name
-        aux['user'] = p.user.username
-        aux['fecha'] = p.created_date.strftime("%d-%m-%Y a las %H:%M")
-        array.append(aux);
-
-    dataj = json.dumps(array)
-    return HttpResponse(dataj, content_type='application/json')
 
 @login_required
 def index(request):
     return render(request, 'index.html', {'form': PcapForm()})
-
 
 
 def getFormatDate(time):
@@ -91,6 +71,11 @@ def getLink(packet, perfil, pcap):
 
     if IP in packet:
         l.ip = packet[IP].dst
+        link = Link.objects.filter(ip=l.ip).filter(pcap=l.pcap).first()
+        if link is None:
+           l.geoposition = getLocation(l.ip)
+        else:
+            l.geoposition = link.geoposition
 
     if scapyh.HTTPRequest in packet:
         l.user_agent = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "User-Agent"))
