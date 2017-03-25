@@ -1,11 +1,10 @@
-from django.shortcuts import render
-
+# -*- coding: utf-8 -*-
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 
 from .models import Perfil
 from .models import Link
-from updater.models import Pcap
+from .models import Location
 
 from updater.forms import PcapForm
 
@@ -21,18 +20,15 @@ import scapy_http.http as scapyh
 def index(request):
     return render(request, 'index.html', {'form': PcapForm()})
 
+@login_required
+def getPerfilDetails(request):
+    id = request.GET['id']
+    perfil = get_object_or_404(Perfil, pk=id)
+    return render(request, 'perfil.html', {'perfil': perfil})
 
-def getFormatDate(time):
-    return datetime.datetime.fromtimestamp(time).strftime('%d-%m-%Y %H:%M:%S')
 
-def getDate(time):
-    return datetime.datetime.fromtimestamp(time)
-
-
-def process_pcap(pk_pcap, user):
-
-    'abrimos el pcap y lo recorremos'
-    pcap = Pcap.objects.get(pk=pk_pcap)
+#Función que procesa un pcap para optener perfiles y sus links asociados.
+def process_pcap(pcap, user):
 
     #path = "/home/imonje/air_profiling" + pcap.docfile.url
     path = pcap.docfile.path
@@ -42,51 +38,65 @@ def process_pcap(pk_pcap, user):
     for i in range(len(packets)):
 
         p = packets[i]
+        'Obtenemos los perfiles asociados'
+        perfil_src = getPerfil(p.src, pcap)
+        perfil_dst = getPerfil(p.dst, pcap)
 
-        try:
-            perfil =  Perfil.objects.get(mac=p.src)
-        except Perfil .DoesNotExist:
-            perfil = None
+        'Generamos los links'
+        getLink(p, perfil_src, perfil_dst, pcap)
 
-        if perfil is None:
-            print("nuevo...")
-            perfil = Perfil()
-            perfil.mac = p.src
-            perfil.user = user
-            perfil.pcap = pcap
-            perfil.save()
+#Funcion que obtiene un perfil de la BD o lo crea si no existe
+def getPerfil(mac, pcap):
 
-        #print("mac : " + str(p.src))
-        getLink(p, perfil, pcap)
+    try:
+        perfil =  Perfil.objects.get(mac=mac)
+    except Perfil.DoesNotExist:
+        perfil = None
 
-    return True
+    if perfil is None:
+        perfil = Perfil()
+        perfil.mac = mac
+        perfil.user = pcap.user
+        perfil.pcap = pcap
+        perfil.save()
 
+    return perfil
 
-def getLink(packet, perfil, pcap):
+#Función que procesa un paquete para un link.
+def getLink(packet, perfil_src, perfil_dst, pcap):
 
-    l =  Link();
-    l.pcap = pcap
-    l.perfil = perfil
-    l.time = getDate(packet.time)
-
+    # si el paquete tiene capa ip lo procesamos
     if IP in packet:
-        l.ip = packet[IP].dst
-        link = Link.objects.filter(ip=l.ip).filter(pcap=l.pcap).first()
-        if link is None:
-           l.geoposition = getLocation(l.ip)
-        else:
-            l.geoposition = link.geoposition
+        l =  Link();
+        l.pcap = pcap
+        l.perfil_src = perfil_src
+        l.perfil_dst = perfil_dst
+        l.ip_dst = packet[IP].dst
+        l.ip_src = packet[IP].src
+        l.time = getDate(packet.time)
 
-    if scapyh.HTTPRequest in packet:
-        l.user_agent = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "User-Agent"))
-        l.host = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "Host"))
-        l.cabezera = packet[scapyh.HTTPRequest].show();
-        print(packet[scapyh.HTTPRequest].show())
+        #si es un paquete HTTP
+        if scapyh.HTTPRequest in packet:
+            l.user_agent = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "User-Agent"))
+            l.host = str(scapyh._get_field_value(packet[scapyh.HTTPRequest], "Host"))
 
-    l.save()
+        l.save()
+
+        #Comprobamos si la ip tiene un objeto location asociado, si no es asi generamos uno
+        location_src = Location.objects.filter(ip=l.ip_src).filter(pcap=l.pcap).first()
+        location_dst = Location.objects.filter(ip=l.ip_dst).filter(pcap=l.pcap).first()
+
+        if location_src is None:
+           getLocation(l.ip_src, l.pcap)
+        if location_dst is None:
+           getLocation(l.ip_dst, l.pcap)
 
 
+def getFormatDate(time):
+    return datetime.datetime.fromtimestamp(time).strftime('%d-%m-%Y %H:%M:%S')
 
+def getDate(time):
+    return datetime.datetime.fromtimestamp(time)
 
 
 

@@ -15,23 +15,24 @@ class Perfil(models.Model):
 
 
 class Link(models.Model):
-    perfil = models.ForeignKey('core.Perfil')
-    pcap = models.ForeignKey('updater.Pcap')
-    ip = models.CharField(max_length=50)
+    perfil_src = models.ForeignKey('core.Perfil',  related_name='perfil_src')
+    ip_src = models.CharField(max_length=50)
+    perfil_dst = models.ForeignKey('core.Perfil',  related_name='perfil_dst')
+    ip_dst = models.CharField(max_length=50)
     host = models.CharField(max_length=50)
-    geoposition = models.ForeignKey('core.Location', null=True)
     user_agent = models.CharField(max_length=200)
-    cabecera = models.TextField()
+    pcap = models.ForeignKey('updater.Pcap')
     time = models.DateTimeField()
 
 class Location (models.Model):
     ip = models.CharField(max_length=50)
+    latitud = models.CharField(max_length=50)
+    longitud = models.CharField(max_length=50)
+    pcap = models.ForeignKey('updater.Pcap')
     timezone = models.CharField(max_length=150)
     countryCode = models.CharField(max_length=50)
     org = models.CharField(max_length=250)
     region = models.CharField(max_length=50)
-    latitud = models.CharField(max_length=50)
-    longitud = models.CharField(max_length=50)
     country = models.CharField(max_length=250)
     regionName = models.CharField(max_length=250)
     isp = models.CharField(max_length=250)

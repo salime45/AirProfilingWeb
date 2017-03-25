@@ -112,7 +112,7 @@
                     var nom = v.nom;
                     var fecha = v.fecha;
                     var user = v.user;
-                    var btn  = "<a class='btn btn-info' href='perfil?perfil="+ v.mac +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                    var btn  = "<a class='btn btn-info' href='perfil?id="+ v.mac +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
                     $('#tabla-perfiles').DataTable().row.add([mac, nom, user, fecha, btn]).draw();
 
 

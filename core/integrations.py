@@ -3,18 +3,17 @@
 import requests
 from .models import Location
 
-def getLocation(ip):
+def getLocation(ip, pcap):
 
     #Hacemos una petición HTTP
     url = "http://ip-api.com/json/" + ip
     r = requests.get(url)
     aux = r.json()
-    print( "============================================================ " )
-    print( aux.get("status"))
 
     if aux.get("status") == "success":
         #Creamos un objeto Location con el resultado
         l = Location()
+        l.pcap = pcap
         l.ip = ip
         l.timezone = aux.get("timezone", "")
         l.countryCode = aux.get("countryCode", "")
@@ -27,9 +26,6 @@ def getLocation(ip):
         l.isp = aux.get("isp", "")
         l.city = aux.get("city", "")
         l.save()
-        return l;
-    else :
-          return None
 
 def getOS(user_agent):
     url = "http://helloacm.com/api/parse-user-agent/?s=nUser-Agent:" + user_agent

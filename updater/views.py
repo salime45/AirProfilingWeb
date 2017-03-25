@@ -32,7 +32,7 @@ def updatePcap(request):
 
             pcap.save()
             #creamos un thread para no hacer esperar al usuario
-            _thread.start_new_thread( process_pcap, (pcap.pk, request.user) )
+            _thread.start_new_thread( process_pcap, (pcap, request.user) )
             #process_pcap(pcap.pk, request.user)
 
             # Redirect to the document list after POST

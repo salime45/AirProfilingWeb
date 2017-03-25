@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="div-detalles">
+    <p> <b>Pcap :</b> <span id="name-pcap"></span> </p>
+    <p> <b>Usuario :</b> <span id="user-perfil"></span> </p>
+    <p> <b>Sistema Operativo :</b> <span id="os-perfil"></span> </p>
+    <p> <b>Dispositivo :</b> <span id="dispositivo-perfil"></span> </p>
+    <p> <b>telefono :</b> <span id="user-perfil"></span> </p>
+    <p> <b>Fecha :</b> <span id="date-perfil"></span> </p>
+</div>
+
+<div class="container-fluid">
+            <h3>Capturas</h3>
+            <table id="tabla-pcaps">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                <thead>
+            </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var perfil_id= '{{ perfil.id }}';
+        //loadDetails();
+        initTablaPcaps();
+        loadPcaps();
+
+        function initTablaPcaps() {
+            $("#tabla-pcaps").DataTable({"bPaginate": false, "info": false });
+        }
+
+        function loadPcaps() {
+            $.get("{% url 'pcaps' %}", function (data, status) {
+
+                //recorremos el array
+                $.each(data, function (i, v) {
+
+                    //Parseamos el JSON
+                    var nom = v.nom;
+                    var fecha = v.fecha;
+                    var user = v.user;
+                    var btn  = "<a class='btn btn-info' href='pcap?pcap="+ v.id +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                    $('#tabla-pcaps').DataTable().row.add([nom, user, fecha, btn]).draw();
+
+
+                });
+
+            });
+        }
+
+        /*function loadDetails() {
+
+           $.get("{% url 'detailsPcap' %}",{pcap: perfil_id}).done(function (data) {
+
+                console.log(data)
+                $("#name-pcap").text(data.nom);
+                $("#user-pcap").text(data.user);
+                $("#date-pcap").text(data.fecha);
+
+           });
+        }*/
+
+
+    });
+</script>
+
+{% endblock content %}
