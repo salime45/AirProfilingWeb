@@ -10,3 +10,4 @@ class Pcap(models.Model):
     user = models.ForeignKey('auth.User')
     docfile = models.FileField(upload_to=generate_filename)
     date = models.DateTimeField(default=timezone.now)
+    procesado = models.BooleanField()

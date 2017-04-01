@@ -7,7 +7,7 @@
     <p> <b>Usuario :</b> <span id="user-perfil"></span> </p>
     <p> <b>Sistema Operativo :</b> <span id="os-perfil"></span> </p>
     <p> <b>Dispositivo :</b> <span id="dispositivo-perfil"></span> </p>
-    <p> <b>telefono :</b> <span id="user-perfil"></span> </p>
+    <p> <b>telefono :</b> <span id="tlf-perfil"></span> </p>
     <p> <b>Fecha :</b> <span id="date-perfil"></span> </p>
 </div>
 
@@ -28,10 +28,11 @@
 <script>
     $(document).ready(function () {
 
-        var perfil_id= '{{ perfil.id }}';
+        var perfil_id= '{{ perfil.mac }}';
         //loadDetails();
         initTablaPcaps();
         loadPcaps();
+        loadDetails();
 
         function initTablaPcaps() {
             $("#tabla-pcaps").DataTable({"bPaginate": false, "info": false });
@@ -47,7 +48,7 @@
                     var nom = v.nom;
                     var fecha = v.fecha;
                     var user = v.user;
-                    var btn  = "<a class='btn btn-info' href='pcap?pcap="+ v.id +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                    var btn  = "<a class='btn btn-info' href='/pcap?pcap="+ v.id +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
                     $('#tabla-pcaps').DataTable().row.add([nom, user, fecha, btn]).draw();
 
 
@@ -56,17 +57,21 @@
             });
         }
 
-        /*function loadDetails() {
+        function loadDetails() {
+                console.log("data " + perfil_id)
 
-           $.get("{% url 'detailsPcap' %}",{pcap: perfil_id}).done(function (data) {
+           $.get("{% url 'perfilDetails' %}", {perfil: perfil_id}).done(function (data) {
 
                 console.log(data)
                 $("#name-pcap").text(data.nom);
-                $("#user-pcap").text(data.user);
-                $("#date-pcap").text(data.fecha);
+                $("#user-perfil").text(data.user);
+                $("#date-perfil").text(data.fecha);
+                $("#tlf-perfil").text(data.fecha);
+                $("#dispositivo-perfil").text(data.fecha);
+                $("#os-perfil").text(data.fecha);
 
            });
-        }*/
+        }
 
 
     });

@@ -3,15 +3,6 @@ from django.utils import timezone
 
 from django.db import models
 
-class Perfil(models.Model):
-    mac = models.CharField(max_length=50, primary_key=True)
-    name = models.CharField(max_length=200)
-    os = models.CharField(max_length=200)
-    telefono = models.CharField(max_length=200)
-    dispositivo = models.CharField(max_length=200)
-    user = models.ForeignKey('auth.User')
-    pcap = models.ForeignKey('updater.Pcap')
-    created_date = models.DateTimeField(default=timezone.now)
 
 
 class Link(models.Model):
@@ -37,6 +28,30 @@ class Location (models.Model):
     regionName = models.CharField(max_length=250)
     isp = models.CharField(max_length=250)
     city = models.CharField(max_length=150)
+
+class Perfil(models.Model):
+    mac = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=200)
+    os = models.CharField(max_length=200)
+    telefono = models.CharField(max_length=200)
+    dispositivo = models.CharField(max_length=200)
+    user = models.ForeignKey('auth.User')
+    pcap = models.ForeignKey('updater.Pcap')
+    created_date = models.DateTimeField(default=timezone.now)
+
+class Vendor(models.Model):
+    mac = models.CharField(max_length=10, primary_key=True)
+    fabricante = models.CharField(max_length=200)
+
+class Dns(models.Model):
+    ip = models.CharField(max_length=50, primary_key=True)
+    host = models.CharField(max_length=200)
+
+class UserAgent(models.Model):
+    value = models.CharField(max_length=200, primary_key=True)
+    os = models.CharField(max_length=200)
+    browser = models.CharField(max_length=200)
+    device = models.CharField(max_length=200)
 
 
 
