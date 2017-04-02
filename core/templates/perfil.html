@@ -3,17 +3,27 @@
 {% block content %}
 
 <div class="div-detalles">
-    <p> <b>Pcap :</b> <span id="name-pcap"></span> </p>
+    <p> <b>Mac :</b> {{ perfil.mac }}  </p>
     <p> <b>Usuario :</b> <span id="user-perfil"></span> </p>
-    <p> <b>Sistema Operativo :</b> <span id="os-perfil"></span> </p>
-    <p> <b>Dispositivo :</b> <span id="dispositivo-perfil"></span> </p>
-    <p> <b>telefono :</b> <span id="tlf-perfil"></span> </p>
     <p> <b>Fecha :</b> <span id="date-perfil"></span> </p>
+    <p> <b>Fabricante :</b> <span id="vendor-perfil"></span> </p>
+    <p> <b>Sistema Operativo :</b> <span id="os-perfil"></span> </p>
+
+        <div class="row text-center">
+        <a class="btn btn-warning" href="{% url 'timeline' %}">Ver Timeline</a>
+    </div>
 </div>
 
-<div class="container-fluid">
-            <h3>Capturas</h3>
-            <table id="tabla-pcaps">
+
+<div class="div-accordions">
+    <div class="panel-group" id="accordion">
+    <div class="panel panel-info">
+            <h4 class="panel-heading panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#accordion-pcaps">Pcaps</a>
+            </h4>
+        <div id="accordion-pcaps" class="panel-collapse collapse">
+            <div class="panel-body">
+            <table id="tabla-pcaps" class="cell-border">
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -23,6 +33,24 @@
                     </tr>
                 <thead>
             </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info ">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#accordion-agents">User Agents</a>
+            </h4>
+        </div>
+        <div id="accordion-agents" class="panel-collapse collapse">
+            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+        </div>
+    </div>
+
+</div>
+
 </div>
 
 <script>
@@ -35,11 +63,12 @@
         loadDetails();
 
         function initTablaPcaps() {
-            $("#tabla-pcaps").DataTable({"bPaginate": false, "info": false });
+            $("#tabla-pcaps").DataTable({"bPaginate": false, "info": false, "searching": false });
         }
 
         function loadPcaps() {
-            $.get("{% url 'pcaps' %}", function (data, status) {
+
+            $.get("{% url 'pcaps' %}",{perfil: perfil_id}).done(function (data) {
 
                 //recorremos el array
                 $.each(data, function (i, v) {
@@ -58,17 +87,14 @@
         }
 
         function loadDetails() {
-                console.log("data " + perfil_id)
 
            $.get("{% url 'perfilDetails' %}", {perfil: perfil_id}).done(function (data) {
 
                 console.log(data)
-                $("#name-pcap").text(data.nom);
                 $("#user-perfil").text(data.user);
                 $("#date-perfil").text(data.fecha);
-                $("#tlf-perfil").text(data.fecha);
-                $("#dispositivo-perfil").text(data.fecha);
-                $("#os-perfil").text(data.fecha);
+                $("#vendor-perfil").text(data.vendor);
+                $("#os-perfil").text(data.os);
 
            });
         }

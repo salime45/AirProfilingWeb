@@ -12,7 +12,11 @@ def index(request):
     return render(request, 'index.html', {'form': PcapForm()})
 
 @login_required
-def getPerfil(request):
+def timeline(request):
+    return render(request, 'timeline.html', {})
+
+@login_required
+def perfil(request):
     id = request.GET['id']
     perfil = get_object_or_404(Perfil, pk=id)
     return render(request, 'perfil.html', {'perfil': perfil})

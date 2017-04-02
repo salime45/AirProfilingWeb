@@ -46,12 +46,9 @@ def processPcap(pcap):
         print("....... > " + str(i) + " /" + p.dst)
         'Comprobamos si son MAC validas'
         if isValidMac(p.src) and isValidMac(p.dst):
-            'Obtenemos los perfiles asociados'
-            perfil_src = processPerfil(p.src, pcap)
-            perfil_dst = processPerfil(p.dst, pcap)
 
             'Generamos los links'
-            processLink(p, perfil_src, perfil_dst, pcap)
+            processLink(p, pcap)
 
 
 #Funcion que obtiene un perfil de la BD o lo crea si no existe
@@ -74,10 +71,16 @@ def processPerfil(mac, pcap):
     return perfil
 
 #Función que procesa un paquete para un link.
-def processLink(packet, perfil_src, perfil_dst, pcap):
+def processLink(packet, pcap):
+
 
     # si el paquete tiene capa ip lo procesamos
     if IP in packet:
+
+        'Obtenemos los perfiles asociados'
+        perfil_src = processPerfil(packet.src, pcap)
+        perfil_dst = processPerfil(packet.dst, pcap)
+
         l =  Link();
         l.pcap = pcap
         l.perfil_src = perfil_src

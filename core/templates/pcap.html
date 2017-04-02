@@ -14,11 +14,10 @@
 <div class="container-fluid">
     <h3>Perfiles</h3>
 
-            <table id="tabla-perfiles">
+            <table id="tabla-perfiles" class="cell-border">
                 <thead>
                     <tr>
                         <th>Mac</th>
-                        <th>Nombre</th>
                         <th>Usuario</th>
                         <th>Fecha</th>
                         <th></th>
@@ -48,11 +47,10 @@
 
                     //Parseamos el JSON
                     var mac = v.mac;
-                    var nom = v.nom;
                     var fecha = v.fecha;
                     var user = v.user;
                     var btn  = "<a class='btn btn-info' href='perfil?id="+ v.mac +"'><span class='glyphicon glyphicon-eye-open'></span></a>";
-                    $('#tabla-perfiles').DataTable().row.add([mac, nom, user, fecha, btn]).draw();
+                    $('#tabla-perfiles').DataTable().row.add([mac, user, fecha, btn]).draw();
 
 
                 });

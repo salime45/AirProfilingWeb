@@ -60,11 +60,11 @@ def getVendor(mac):
         vendor.mac=mac[0:8]
         vendor.fabricante=r.text
         vendor.save()
+    return vendor
 
 def is_ip_private(ip):
 
     # https://en.wikipedia.org/wiki/Private_network
-
     priv_lo = re.compile("^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
     priv_24 = re.compile("^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
     priv_20 = re.compile("^192\.168\.\d{1,3}.\d{1,3}$")

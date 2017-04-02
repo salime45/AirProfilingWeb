@@ -1,30 +1,31 @@
 
 import os
 import django
-from user_agents import parse
+
 
 #configuramos django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "air_profiling.settings")
 django.setup()
 
+from django.db.models import Q
 
 from core.models import Link
+from core.models import Perfil
+from updater.models import Pcap
 
 def test():
-    print("ñññññññññññ")
-    links = Link.objects.exclude(user_agent = '').exclude(user_agent = None)
+        perfil = '10:fe:ed:f5:01:fc'
+        auxp = Perfil.objects.get(pk=perfil)
+        pcaps_ids = Link.objects.filter(Q(perfil_dst=auxp) | Q(perfil_src=auxp)).values('pcap').distinct()
+        print("--->" + str( len(pcaps_ids) ))
+        print("--->" + str( pcaps_ids) )
+        pcaps= []
+        for p in  pcaps_ids:
+            auxp = Pcap.objects.get(pk=p.get('pcap'))
+            pcaps.append(auxp)
 
-    for i in range(len(links)):
+        print("--->" + str( pcaps) )
 
-        s = parse(links[i].user_agent)
-        print ("+"+  str(links[i].user_agent))
-        print ("+"+  str(s))
-        agent = str(s).split("/")
-        print ("+"+  agent[0])
-        print ("+"+  agent[1])
-        print ("+"+  agent[2])
-
-        print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 
 test()

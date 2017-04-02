@@ -1,15 +1,30 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .models import Pcap
+from core.models import Perfil, Link
 
 import json
 
 
 @login_required
 def getPcaps(request):
-    pcaps = Pcap.objects.all()
+
+    if 'perfil' in request.GET:
+        perfil = request.GET['perfil']
+
+        auxp = Perfil.objects.get(pk=perfil)
+        pcaps_ids = Link.objects.filter(Q(perfil_dst=auxp) | Q(perfil_src=auxp)).values('pcap').distinct()
+        pcaps= []
+        for p in  pcaps_ids:
+            auxp = Pcap.objects.get(pk=p.get('pcap'))
+            pcaps.append(auxp)
+
+    else :
+        pcaps = Pcap.objects.all()
+
     array = []
     for p in  pcaps:
         aux = {}

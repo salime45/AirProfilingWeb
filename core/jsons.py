@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from .models import Perfil
 from updater.models import Pcap
 from updater.jsons import getRealName
+from .integrations import getVendor
 
 import json
 
@@ -36,13 +37,15 @@ def getDetailsPerfil(request):
 
     id = request.GET['perfil']
     p = get_object_or_404(Perfil, pk=id)
+    vendor = getVendor(id)
+
     aux = {}
     aux['id'] = p.mac
     aux['user'] = p.user.username
     aux['nom'] = getRealName(p.pcap.docfile.name)
     aux['fecha'] = p.created_date.strftime("%d-%m-%Y a las %H:%M")
-    aux['dispositivo'] = ''
-    aux['os'] = ''
+    aux['vendor'] = vendor.fabricante
+    aux['os'] = p.os
     aux['tlf'] = p.telefono
     data = json.dumps(aux)
 
