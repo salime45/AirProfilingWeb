@@ -43,10 +43,9 @@
             </h4>
         </div>
         <div id="accordion-agents" class="panel-collapse collapse">
-            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
-        </div>
+        <ul id="list-agents" class="list-group">
+
+        </ul>
     </div>
 
 </div>
@@ -61,6 +60,7 @@
         initTablaPcaps();
         loadPcaps();
         loadDetails();
+        loaduserAgents();
 
         function initTablaPcaps() {
             $("#tabla-pcaps").DataTable({"bPaginate": false, "info": false, "searching": false });
@@ -90,11 +90,25 @@
 
            $.get("{% url 'perfilDetails' %}", {perfil: perfil_id}).done(function (data) {
 
-                console.log(data)
                 $("#user-perfil").text(data.user);
                 $("#date-perfil").text(data.fecha);
                 $("#vendor-perfil").text(data.vendor);
                 $("#os-perfil").text(data.os);
+
+           });
+        }
+
+
+        function loaduserAgents() {
+
+           $.get("{% url 'agents' %}", {perfil: perfil_id}).done(function (data) {
+
+                 //recorremos el array
+                $.each(data, function (i, v) {
+                    $("#list-agents").append("<li class='list-group-item'>"+ v.user_agent +"</li>");
+                });
+
+
 
            });
         }

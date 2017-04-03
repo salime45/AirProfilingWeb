@@ -7,24 +7,21 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "air_profiling.settings")
 django.setup()
 
-from django.db.models import Q
-
 from core.models import Link
 from core.models import Perfil
 from updater.models import Pcap
 
 def test():
-        perfil = '10:fe:ed:f5:01:fc'
+        perfil = '90:68:c3:2e:96:53'
         auxp = Perfil.objects.get(pk=perfil)
-        pcaps_ids = Link.objects.filter(Q(perfil_dst=auxp) | Q(perfil_src=auxp)).values('pcap').distinct()
-        print("--->" + str( len(pcaps_ids) ))
-        print("--->" + str( pcaps_ids) )
-        pcaps= []
-        for p in  pcaps_ids:
-            auxp = Pcap.objects.get(pk=p.get('pcap'))
-            pcaps.append(auxp)
+        print("--->" + str( perfil) )
 
-        print("--->" + str( pcaps) )
+        user_agents = Link.objects.filter(perfil_src=auxp).exclude(user_agent='').values('user_agent').distinct()
+        print("--->" + str( len(user_agents) ))
+
+        for p in  user_agents:
+            print(p)
+
 
 
 

@@ -3,8 +3,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from .models import Perfil
+from .models import Link
+
 from updater.models import Pcap
 from updater.jsons import getRealName
+
 from .integrations import getVendor
 
 import json
@@ -50,3 +53,40 @@ def getDetailsPerfil(request):
     data = json.dumps(aux)
 
     return HttpResponse(data, content_type='application/json')
+
+@login_required
+def getUserAgents(request):
+
+    id = request.GET['perfil']
+    p = get_object_or_404(Perfil, pk=id)
+
+    user_agents = Link.objects.filter(perfil_src=p).exclude(user_agent='').values('user_agent').distinct()
+
+    lista = []
+    for u in  user_agents:
+        lista.append(u)
+
+    data = json.dumps(lista)
+    return HttpResponse(data, content_type='application/json')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
