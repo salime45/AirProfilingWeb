@@ -10,7 +10,7 @@
     <p> <b>Sistema Operativo :</b> <span id="os-perfil"></span> </p>
 
         <div class="row text-center">
-        <a class="btn btn-warning" href="{% url 'timeline' %}">Ver Timeline</a>
+            <a id="timeline" class="btn btn-warning" >Ver Timeline</a>
     </div>
 </div>
 
@@ -94,6 +94,7 @@
                 $("#date-perfil").text(data.fecha);
                 $("#vendor-perfil").text(data.vendor);
                 $("#os-perfil").text(data.os);
+                $('#timeline').attr("href", "/timeline?id="+perfil_id)
 
            });
         }

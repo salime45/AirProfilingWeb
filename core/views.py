@@ -13,7 +13,9 @@ def index(request):
 
 @login_required
 def timeline(request):
-    return render(request, 'timeline.html', {})
+    id = request.GET['id']
+    perfil = get_object_or_404(Perfil, pk=id)
+    return render(request, 'timeline.html', {'perfil': perfil})
 
 @login_required
 def perfil(request):
