@@ -104,6 +104,12 @@
 
            $.get("{% url 'agents' %}", {perfil: perfil_id}).done(function (data) {
 
+                //si no hay datos mostramos un aviso
+                if(data.length === 0){
+                    $("#list-agents").append("<li class='list-group-item'>No existen Agentes de Usuario de este perfil</li>");
+
+                }
+
                  //recorremos el array
                 $.each(data, function (i, v) {
                     $("#list-agents").append("<li class='list-group-item'>"+ v.user_agent +"</li>");

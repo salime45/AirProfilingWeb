@@ -36,9 +36,8 @@ def is_lock_free():
 if not is_lock_free():
     sys.exit()
 
-
-procesados = processPcaps()
-print(str(procesados) + " pcaps procesados")
-#while True :
-#time.sleep(60)
+while True :
+    procesados = processPcaps()
+    print(str(procesados) + " pcaps procesados")
+    time.sleep(60)
 

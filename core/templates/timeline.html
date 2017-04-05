@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="container">
 
-    <div class="page-header">
+    <div class="page-header hidden">
         <h1>Timeline de {{ perfil.mac }} </h1>
     </div>
-    <ul id="timeline" class="timeline">
+
+    <ul id="timeline" class="timeline hidden">
 
 
 
@@ -17,8 +19,9 @@
     $(document).ready(function () {
 
         var perfil_id= '{{ perfil.mac }}';
+        //mostramos el simbolo de carga
+        showLoading();
         loadLinks();
-
         function loadLinks(){
 
             $.get("{% url 'links' %}",{perfil: perfil_id}).done(function (data) {
@@ -44,6 +47,10 @@
                         }
 
                 });
+
+                //Mostramos la lista y escondemos el simbolo de carga
+                $(".hidden").removeClass("hidden");
+                hideLoading();
 
             });
         }

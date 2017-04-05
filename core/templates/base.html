@@ -43,6 +43,12 @@
             <hr>
         </div>
 
+        {% block loading %}
+            <div id="loading" class="col-md-12 text-center hidden">
+                <br>
+                <img src="{% static 'images/loading.svg' %}" alt="Cargando">
+            </div>
+        {% endblock %}
 
         {% block content %}
         {% endblock %}
@@ -84,5 +90,15 @@ function showInformation(msg) {
     $('#alert .modal-body').html(msg);
     $('#alert').modal('toggle');
 }
+
+function hideLoading() {
+        $("#loading").addClass("hidden");
+
+}
+
+function showLoading() {
+        $("#loading").removeClass("hidden");
+
+    }
 
 </script>

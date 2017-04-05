@@ -1,29 +1,28 @@
 
 import os
 import django
-import httpagentparser
+
 
 #configuramos django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "air_profiling.settings")
 django.setup()
 
-
 from core.models import Link
+from core.models import Perfil
+from updater.models import Pcap
 
 def test():
-    print("ñññññññññññ")
-    links = Link.objects.exclude(user_agent = '').exclude(user_agent = None)
+        perfil = '90:68:c3:2e:96:53'
+        auxp = Perfil.objects.get(pk=perfil)
+        print("--->" + str( perfil) )
 
-    for i in range(len(links)):
+        user_agents = Link.objects.filter(perfil_src=auxp).exclude(user_agent='').values('user_agent').distinct()
+        print("--->" + str( len(user_agents) ))
 
-        if links[i] != None and links[i].user_agent !=  'None':
-            s = httpagentparser.detect(links[i].user_agent)
-            if s != 'None' :
-                print ("+"+  str(s))
-                print ("+"+  str(s.get('platform')))
-                print ("+"+  str(s.get('platform').get('name') + " "+ s.get('platform').get('version')  ))
-                print ("+"+  str(s.get('browser').get('name') + " "+ s.get('browser').get('version')  ))
-                print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        for p in  user_agents:
+            print(p)
+
+
 
 
 test()

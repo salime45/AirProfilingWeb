@@ -47,3 +47,7 @@ hr {
     margin: 5px 40px 20px 40px;
 
 }
+
+.hidden {
+    display: none;
+}
