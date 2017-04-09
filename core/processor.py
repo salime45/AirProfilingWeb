@@ -9,6 +9,7 @@ from updater.models import Pcap
 from .integrations import getLocation
 from .integrations import getVendor
 from .integrations import getUA
+from .integrations import getHost
 
 from scapy.all import *
 import scapy_http.http as scapyh
@@ -105,6 +106,9 @@ def processLink(packet, pcap):
            getLocation(l.ip_src, l.pcap)
         if location_dst is None:
            getLocation(l.ip_dst, l.pcap)
+
+        getHost(l.ip_src)
+        getHost(l.ip_dst)
 
 def isValidMac(mac):
     return mac != "ff:ff:ff:ff:ff:ff" and not mac.startswith("01")

@@ -2,12 +2,14 @@
 
 import requests
 import re
+import socket
 
 from user_agents import parse
 
 from .models import Location
 from .models import Vendor
 from .models import UserAgent
+from .models import Dns
 
 def getLocation(ip, pcap):
 
@@ -34,6 +36,22 @@ def getLocation(ip, pcap):
             l.isp = aux.get("isp", "")
             l.city = aux.get("city", "")
             l.save()
+
+def getHost(ip):
+
+    dns = Dns.objects.filter(ip=ip);
+    if not is_ip_private(ip) and len(dns) < 1:
+        try:
+
+            dns = Dns()
+            host = socket.gethostbyaddr(ip)
+            dns.ip = ip
+            print(host)
+            dns.host = host[0]
+            dns.save()
+            print("Obtenido host " + host[0] + " desde la ip : " +ip)
+        except socket.error:
+            print("Error obteniendo la ip : " + ip)
 
 def getUA(user_agent):
     u = UserAgent.objects.filter(value = user_agent).first()

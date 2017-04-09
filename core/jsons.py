@@ -3,8 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from .models import Perfil
-from .models import Link
+from .models import Perfil, Link, Dns, Location
 
 from updater.models import Pcap
 from updater.jsons import getRealName
@@ -47,8 +46,8 @@ def getLinks(request):
     array = []
     for l in  links:
         aux = {}
-        aux['ipSrc'] = l.ip_src
-        aux['ipDst'] = l.ip_dst
+        aux['ipSrc'] = jsonFromIp(l.ip_src, l.pcap)
+        aux['ipDst'] = jsonFromIp(l.ip_dst, l.pcap)
         aux['perfilSrc'] = l.perfil_src.mac
         aux['perfilDst'] = l.perfil_dst.mac
         aux['host'] = l.host
@@ -58,6 +57,27 @@ def getLinks(request):
     dataj = json.dumps(array)
     return HttpResponse(dataj, content_type='application/json')
 
+
+def jsonFromIp(ip, pcap):
+    aux= {}
+    aux['ip'] = ip
+
+    dns = Dns.objects.filter(ip=ip).first();
+    if dns is None:
+        dns=''
+    else:
+        dns = dns.host
+    aux['dns'] = dns
+
+    location = Location.objects.filter(ip=ip).filter(pcap=pcap).first();
+    if location is not None:
+        locationAux = {}
+        locationAux['country'] = location.country
+        locationAux['city'] = location.city
+        locationAux['org'] = location.org
+        aux['location'] = locationAux
+
+    return aux;
 
 @login_required
 def getDetailsPerfil(request):

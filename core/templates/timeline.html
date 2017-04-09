@@ -8,11 +8,13 @@
         <h1>Timeline de {{ perfil.mac }} </h1>
     </div>
 
+    <div class="">
     <ul id="timeline" class="timeline hidden">
 
 
 
     </ul>
+    </div>
 </div>
 
 <script>
@@ -22,30 +24,14 @@
         //mostramos el simbolo de carga
         showLoading();
         loadLinks();
+
         function loadLinks(){
 
             $.get("{% url 'links' %}",{perfil: perfil_id}).done(function (data) {
 
                 //recorremos el array
                 $.each(data, function (i, v) {
-
-                        console.log(v)
-
-                        //Parseamos el JSON
-                        var ipSrc = v.ipSrc;
-                        var ipDst = v.ipDst;
-                        var perfilSrc = v.perfilSrc;
-                        var perfilDst = v.perfilDst;
-                        var fecha = v.time;
-                        var host = v.host;
-
-                        if(perfilSrc === perfil_id){
-                            $('#timeline').append(getCardSend(ipSrc, ipDst, host, fecha));
-                        }if(perfilDst === perfil_id){
-                            $('#timeline').append(getCardReceive(ipSrc, ipDst, host, fecha));
-
-                        }
-
+                     $('#timeline').append( generateCard(v) );
                 });
 
                 //Mostramos la lista y escondemos el simbolo de carga
@@ -55,39 +41,58 @@
             });
         }
 
-        function getCardSend(ipSrc, ipDst, host, fecha){
+        function generateCard(json){
 
-            var x = "<li>"+
-                        "<div class='timeline-badge warning'></div>"+
-                        "<div class='timeline-panel'>"+
+            var ipSrc = json.ipSrc.ip;
+            var ipDst = json.ipDst.ip;
+
+            var dnsSrc = json.ipSrc.dns;
+            var dnsDst = json.ipDst.dns;
+
+            var perfilSrc = json.perfilSrc;
+            var perfilDst = json.perfilDst;
+
+            var fecha = json.time;
+            var host = json.host;
+            var locationSrc = json.ipSrc.location;
+            var locationDst = json.ipDst.location;
+
+            var x;
+
+            if(perfilSrc === perfil_id) {
+                x = "<li>"+
+                        "<div class='timeline-badge warning'></div>";
+
+            } else {
+                x = "<li class='timeline-inverted'>"+
+                        "<div class='timeline-badge info'></div>";
+            }
+
+            x += "<div class='timeline-panel'>"+
                             "<div class='timeline-heading'>"+
                                 "<h4 class='timeline-title'>Enviado desde " + ipSrc +" a " + ipDst +"</h4>"+
                                 "<p><small class='text-muted'><i class='glyphicon glyphicon-time'></i> "+fecha+"</small></p>"+
                             "</div>"+
                             "<div class='timeline-body'>"+
-                                "<p> "+ host +" </p>"+
+                                "<p> <b>Perfil origen : </b> <a href='/perfil?id=" + perfilSrc +"' > "+ perfilSrc +" </a></p>"+
+                                "<p> <b>Perfil destino : </b> <a href='/perfil?id=" + perfilDst +"' > "+ perfilDst +" </a></p>";
+                                if(dnsSrc !== ''){
+                                     x += "<p> <b>DNS de "+ ipSrc +" : </b> "+ dnsSrc +"</p>";
+                                }
+                                if(dnsDst !== ''){
+                                    x += "<p> <b>DNS de "+ ipDst +" : </b> "+ dnsDst +"</p>";
+                                }
+                                if(locationSrc !== undefined){
+                                    x += "<p> <b>Localización de  "+ ipSrc +" : </b> "+ locationSrc.country +" / "+ locationSrc.city +" ( "+ locationSrc.org + " )" +"</p>";
+                                }
+                                if(locationDst !== undefined){
+                                    x += "<p> <b>Localización de  "+ ipDst +" : </b> "+ locationDst.country +" / "+ locationDst.city +" ( "+ locationDst.org + " )" +"</p>";
+                                }
+
+                                x += "<p> "+ host +" </p>"+
                             "</div>"+
                         "</div>"+
                     "</li>";
-            return x;
-
-        }
-
-        function getCardReceive(ipSrc, ipDst, host, fecha){
-
-            var x = "<li class='timeline-inverted'>"+
-                        "<div class='timeline-badge info'></div>"+
-                        "<div class='timeline-panel'>"+
-                            "<div class='timeline-heading'>"+
-                                "<h4 class='timeline-title'>Recibido en " + ipSrc +" desde " + ipDst +"</h4>"+
-                                "<p><small class='text-muted'><i class='glyphicon glyphicon-time'></i> "+fecha+"</small></p>"+
-                            "</div>"+
-                            "<div class='timeline-body'>"+
-                                "<p> "+ host +" </p>"+
-                            "</div>"+
-                        "</div>"+
-                    "</li>";
-
             return x;
 
         }
