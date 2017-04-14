@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'updater',
     'core',
     'scapy_http',
+    'tacyt',
 ]
 
 MIDDLEWARE = [
