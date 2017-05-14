@@ -5,7 +5,7 @@
 <div class="container">
 
     <div class="page-header hidden">
-        <h1>Posibles aplicaciones relacionadas con <span id="host"></span> </h1>
+        <h1 id="title">Posibles aplicaciones relacionadas con <span id="host"></span> </h1>
     </div>
 
     <div class="mindmap hidden">
@@ -54,6 +54,11 @@
 
                 //Mostramos la lista y escondemos el simbolo de carga
                 $(".hidden").removeClass("hidden");
+
+                if(!data.length){
+                    $("#title").text("No hay aplicaciones relacionadas con este link");
+                    $(".mindmap").addClass("hidden")
+                }
                 hideLoading();
             });
 
