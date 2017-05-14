@@ -43,6 +43,8 @@
 
         function generateCard(json){
 
+            var id = json.id;
+
             var ipSrc = json.ipSrc.ip;
             var ipDst = json.ipDst.ip;
 
@@ -83,14 +85,16 @@
                                     x += "<p> <b>DNS de "+ ipDst +" : </b> "+ dnsDst +"</p>";
                                 }
                                 if(locationSrc !== undefined){
-                                    x += "<p> <b>Localización de  "+ ipSrc +" : </b> "+ locationSrc.country +" / "+ locationSrc.city +" ( "+ locationSrc.org + " )" +"</p>";
+                                    x += "<p> <b>Localización de  "+ ipSrc +" : </b> "+ locationSrc.country +" / "+ locationSrc.city +" ("+ locationSrc.org + ")" +"</p>";
                                 }
                                 if(locationDst !== undefined){
-                                    x += "<p> <b>Localización de  "+ ipDst +" : </b> "+ locationDst.country +" / "+ locationDst.city +" ( "+ locationDst.org + " )" +"</p>";
+                                    x += "<p> <b>Localización de  "+ ipDst +" : </b> "+ locationDst.country +" / "+ locationDst.city +" ("+ locationDst.org + ")" +"</p>";
+                                }
+                                if(host !== undefined && host !== ''){
+                                    x += "<p> <b>Host : </b> <a href='/apps?id=" + id +"' > "+ host +" </a></p>";
                                 }
 
-                                x += "<p> "+ host +" </p>"+
-                            "</div>"+
+                                x += "</div>"+
                         "</div>"+
                     "</li>";
             return x;

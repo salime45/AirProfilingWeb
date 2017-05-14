@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="page-header hidden">
+        <h1>Posibles aplicaciones relacionadas con <span id="host"></span> </h1>
+    </div>
+
+    <div class="mindmap hidden">
+        <ol class="children children_leftbranch">
+
+
+        </ol>
+
+        <div class="node node_root">
+            <div class="node__text">Aplicaciones</div>
+            <input type="text" class="node__input">
+        </div>
+
+        <ol class="children children_rightbranch">
+
+        </ol>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        var link_id = '{{ link.id }}';
+        var left = true;
+
+        //mostramos el simbolo de carga
+        showLoading();
+        loadTitle();
+        loadApps();
+
+        function loadTitle() {
+            var host = '{{ link.host }}';
+            host = host.substring(7, host.length - 5)
+            $('#host').text(host)
+        }
+
+        function loadApps() {
+
+            $.get("{% url 'getapps' %}", {link: link_id}).done(function (data) {
+
+                $.each(data, function (i, v) {
+                    loadChildren(v.name)
+                });
+
+                //Mostramos la lista y escondemos el simbolo de carga
+                $(".hidden").removeClass("hidden");
+                hideLoading();
+            });
+
+
+        }
+
+        function loadChildren(nameApp) {
+
+            var child = "<li class='children__item'>" +
+                    "<div class='node'>" +
+                    "<div class='node__text'>" + nameApp + "</div>" +
+                    "<input type='text' class='node__input'>" +
+                    "</div>" +
+                    "</li>";
+
+            if (left) {
+                $(".children_leftbranch").append(child);
+            } else {
+                $(".children_rightbranch").append(child);
+            }
+
+            left = !left;
+
+        }
+
+
+
+
+    });
+</script>
+
+{% endblock content %}

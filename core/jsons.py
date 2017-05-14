@@ -9,6 +9,7 @@ from updater.models import Pcap
 from updater.jsons import getRealName
 
 from .integrations import getVendor
+from .integrations import getTacytApps
 
 import json
 
@@ -46,12 +47,32 @@ def getLinks(request):
     array = []
     for l in  links:
         aux = {}
+        aux['id'] = l.id
         aux['ipSrc'] = jsonFromIp(l.ip_src, l.pcap)
         aux['ipDst'] = jsonFromIp(l.ip_dst, l.pcap)
         aux['perfilSrc'] = l.perfil_src.mac
         aux['perfilDst'] = l.perfil_dst.mac
-        aux['host'] = l.host
+        aux['host'] = normalizeHost(l.host)
         aux['time'] = p.created_date.strftime("%d-%m-%Y a las %H:%M")
+        array.append(aux);
+
+    dataj = json.dumps(array)
+    return HttpResponse(dataj, content_type='application/json')
+
+@login_required
+def getApps(request):
+
+    id = request.GET['link']
+    l = get_object_or_404(Link, pk=id)
+
+    host = l.host
+    host = host[2:len(host)-1]
+
+    list = getTacytApps(host)
+    array = []
+    for l in  list:
+        aux = {}
+        aux['name'] = l.get('title')
         array.append(aux);
 
     dataj = json.dumps(array)
@@ -77,7 +98,10 @@ def jsonFromIp(ip, pcap):
         locationAux['org'] = location.org
         aux['location'] = locationAux
 
-    return aux;
+    return aux
+
+def normalizeHost(host):
+    return host[2:len(host)-1]
 
 @login_required
 def getDetailsPerfil(request):

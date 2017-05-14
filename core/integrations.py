@@ -11,6 +11,8 @@ from .models import Vendor
 from .models import UserAgent
 from .models import Dns
 
+import tacyt.TacytApp as tacytapp
+
 def getLocation(ip, pcap):
 
     if not is_ip_private(ip):
@@ -52,6 +54,18 @@ def getHost(ip):
             print("Obtenido host " + host[0] + " desde la ip : " +ip)
         except socket.error:
             print("Error obteniendo la ip : " + ip)
+
+def getTacytApps(host):
+    result = []
+    api = tacytapp.TacytApp("PpQbU3AWa773ghLdf2YE", "9UWa3aqaJKrqTkYqtbyUUmyP8uT39NmUYH4HuQWJ")
+    result_search = api.search_apps("links:\"http://" + host + "\"",1 , 15, '' ,True)
+    list = result_search.data.get('result').get('applications')
+
+    for i in range(len(list)):
+        app = list[i]
+        result.append(app)
+
+    return result
 
 def getUA(user_agent):
     u = UserAgent.objects.filter(value = user_agent).first()

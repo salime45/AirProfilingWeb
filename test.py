@@ -1,6 +1,7 @@
 
 import os
 import django
+import socket
 
 
 #configuramos django
@@ -10,7 +11,7 @@ django.setup()
 import tacyt.TacytApp as tacytapp
 from core.models import Link
 
-def test():
+def testTacyct():
 
     api = tacytapp.TacytApp("PpQbU3AWa773ghLdf2YE", "9UWa3aqaJKrqTkYqtbyUUmyP8uT39NmUYH4HuQWJ")
     links = Link.objects.exclude(host='').values('host').distinct()
@@ -29,8 +30,13 @@ def test():
 
         print("\n\n==================================================================================\n\n")
 
+def testDns():
+    host = socket.gethostbyaddr("54.83.61.168")
+    print("----- " + str(host[0]) )
 
-test()
+
+
+testDns()
 
 
 
