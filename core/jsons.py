@@ -73,6 +73,8 @@ def getApps(request):
     for l in  list:
         aux = {}
         aux['name'] = l.get('title')
+        aux['package'] = l.get('packageName')
+
         array.append(aux);
 
     dataj = json.dumps(array)

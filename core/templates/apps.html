@@ -49,7 +49,7 @@
             $.get("{% url 'getapps' %}", {link: link_id}).done(function (data) {
 
                 $.each(data, function (i, v) {
-                    loadChildren(v.name)
+                    loadChildren(v.name, v.package)
                 });
 
                 //Mostramos la lista y escondemos el simbolo de carga
@@ -65,11 +65,13 @@
 
         }
 
-        function loadChildren(nameApp) {
+        function loadChildren(nameApp, package) {
 
             var child = "<li class='children__item'>" +
                     "<div class='node'>" +
-                    "<div class='node__text'>" + nameApp + "</div>" +
+                    "<div class='node__text'>" +
+                        "<b>"+nameApp + "</b> [ "+ package + " ] "+
+                    "</div>" +
                     "<input type='text' class='node__input'>" +
                     "</div>" +
                     "</li>";
